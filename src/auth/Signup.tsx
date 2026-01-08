@@ -7,6 +7,8 @@ import { Link } from "react-router-dom"
 import { use, useState, type ChangeEvent, type FormEvent } from "react"
 import type { SignupInputState } from "@/schema/userSchema"
 import { userSignupSchema } from "@/schema/userSchema"
+import { set } from "zod"
+import { fi } from "zod/v4/locales"
 
 const Signup = () => {
   const [input, setInput] = useState<SignupInputState>({
@@ -22,14 +24,17 @@ const Signup = () => {
     const { name, value } = e.target
     setInput(prev => ({ ...prev, [name]: value }))
   }
-
+  const [errors, setErrors] = useState<Partial<SignupInputState>>({});
   const loginSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     console.log("Login submitted:", input)
     const result = userSignupSchema.safeParse(input);
     if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
+      
+    const fieldErrors = result.error.flatten().fieldErrors;
+    setErrors(fieldErrors as Partial<SignupInputState>);
+    return
     }
     // Simulate async login
     setTimeout(() => setLoading(false), 2000)
@@ -58,6 +63,9 @@ const Signup = () => {
             className="pl-8 focus-visible:ring-1"
           />
           <User className="absolute inset-y-10 left-1 text-gray-400 pointer-events-none" />
+          {
+            errors && <span className="text-sm text-red-500">{errors.fullname}</span>
+          }
         </div>
          <div className="flex flex-col gap-2 relative">
           <Label className="text-center text-sm sm:text-base">Contact</Label>
@@ -70,6 +78,9 @@ const Signup = () => {
             className="pl-8 focus-visible:ring-1"
           />
           <Phone className="absolute inset-y-10 left-1 text-gray-400 pointer-events-none" />
+           {
+            errors && <span className="text-sm text-red-500">{errors.contact}</span>
+          }
         </div>
          <div className="flex flex-col gap-2 relative">
           <Label className="text-center text-sm sm:text-base">Email</Label>
@@ -82,6 +93,9 @@ const Signup = () => {
             className="pl-8 focus-visible:ring-1"
           />
           <Mail className="absolute inset-y-10 left-1 text-gray-400 pointer-events-none" />
+           {
+            errors && <span className="text-sm text-red-500">{errors.email}</span>
+          }
         </div>
 
         <div className="flex flex-col gap-2 relative">
@@ -95,6 +109,9 @@ const Signup = () => {
             className="pl-8 focus-visible:ring-1"
           />
           <LockKeyhole className="absolute inset-y-10 left-1 text-gray-400 pointer-events-none" />
+           {
+            errors && <span className="text-sm text-red-500">{errors.password}</span>
+          }
         </div>
 
         <div className="mb-10">

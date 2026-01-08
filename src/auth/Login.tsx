@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@radix-ui/react-separator"
 import { Link } from "react-router-dom"
 import { useState, type ChangeEvent, type FormEvent } from "react"
-
+import { userLoginSchema } from "@/schema/userSchema"
 import type { LoginInputState } from "@/schema/userSchema"
 
 const Login = () => {
@@ -13,6 +13,8 @@ const Login = () => {
     email: "",
     password: ""
   })
+
+  const [errors, setErrors] = useState<Partial<LoginInputState>>({})
 
   const [loading, setLoading] = useState(false)
 
@@ -24,8 +26,23 @@ const Login = () => {
   const loginSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+
+    const result = userLoginSchema.safeParse(input)
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors
+      setErrors({
+        email: fieldErrors.email?.[0],
+        password: fieldErrors.password?.[0],
+      })
+      setLoading(false)
+      return
+    }
+
+    setErrors({})
+
     console.log("Login submitted:", input)
-    // Simulate async login
+
     setTimeout(() => setLoading(false), 2000)
   }
 
@@ -52,6 +69,7 @@ const Login = () => {
             className="pl-8 focus-visible:ring-1"
           />
           <Mail className="absolute inset-y-10 left-1 text-gray-400 pointer-events-none" />
+          {errors.email && <span className="text-sm text-red-500">{errors.email}</span>}
         </div>
 
         <div className="flex flex-col gap-2 relative">
@@ -65,6 +83,7 @@ const Login = () => {
             className="pl-8 focus-visible:ring-1"
           />
           <LockKeyhole className="absolute inset-y-10 left-1 text-gray-400 pointer-events-none" />
+          {errors.password && <span className="text-sm text-red-500">{errors.password}</span>}
         </div>
 
         <div className="mb-10">
@@ -80,13 +99,17 @@ const Login = () => {
         </div>
 
         <Separator />
-
+        <div>
+        <Link to="/forgot-password" className="text-blue-500"> Forgot Password</Link>
+        </div>
+        
         <p>
           Don't have an account?{" "}
           <Link to="/signup" className="text-blue-500">
             Signup
           </Link>
         </p>
+
       </form>
     </div>
   )

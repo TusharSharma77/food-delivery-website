@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Mail } from "lucide-react"
+import { LockKeyhole, Mail } from "lucide-react"
 import { Link } from 'react-router-dom';
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState<string>("");
+const ResetPassword = () => {
+  const [newPassword, setNewPassword] = useState<string>("");
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -11,21 +11,21 @@ const ForgotPassword = () => {
         
         <div className="text-center">
           <h1 className="font-extrabold">
-            Forgot Password
+            Reset Password
           </h1>
           <p className="text-sm text-gray-600">
-            Enter your email to reset your password
+            Enter your new password
           </p>
         </div>
 
         <div className="flex flex-col gap-2 relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           
           <input 
-            type="email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            type="password" 
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Enter Your New Password"
             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg 
                        focus:outline-none focus:ring-2 focus:ring-gray-100"
           />
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
           type="submit"
           className="w-full !bg-blue-500 hover:!bg-blue-600 !text-white"
         >
-          Send Reset Link
+           Reset 
         </button>
         <Link to="/login" className="text-sm text-center text-blue-500"> Back to Login</Link>
       </form>
@@ -44,4 +44,4 @@ const ForgotPassword = () => {
   )
 }
 
-export default ForgotPassword
+export default ResetPassword
